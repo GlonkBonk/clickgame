@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/easytimer@1.1.1/dist/easytimer.min.js"></script>
+    <script src="scripts.js"></script>
+    <title>clickergame</title>
+</head>
+<body>
+    
+    <div id="chronoExample">
+        <div class="values"></div>
+        <div>
+            <button class="startButton">Start</button>
+            <button class="pauseButton" >Pause</button>
+            <button class="stopButton">reset</button>
+           
+          
+            <label for="time">set the amount of second you want to play</label><br>
+            <input type="number" id="input">
+            <input type="submit" value="Submit" id="submit">
+ 
+        </div>
+    </div>
+
+    <div id="players">
+    <div id="player1"> 
+     
+<p>player one <br>Clicks: <div id="clicks1">0</div></p>
+<span>player one uses the F key to play</span>
+    </div>
+
+    <div id="player2">
+        
+<p>player two <br>Clicks: <div id="clicks2">0</div></p>
+<span>player two uses the J key to play</span> <br> <br> 
+
+<span id="winnertext"> </span>
+    </div>   
+    </div> 
+
+    </div>
+    <script>
+        
+        var clicks1 = 0;
+        var clicks2 = 0;
+        var winner = null;
+        var time = 15;
+        var playing =false; 
+        
+
+var timer = new Timer();
+$('#chronoExample .startButton').click(function () {
+    playing = true;
+    document.getElementById("submit").hidden = true;
+    timer.start({countdown: true, startValues: {seconds: time}, precision: 'secondTenths'});
+    document.getElementById("winnertext").innerText = "";
+});
+
+$('#chronoExample .pauseButton').click(function () {
+    playing = false;
+    timer.pause();
+});
+
+$('#chronoExample .stopButton').click(function () {
+    playing = false;
+    clicks1 = 0;
+    document.getElementById("clicks1").innerText=clicks1;
+    clicks2 = 0;
+    document.getElementById("clicks2").innerText=clicks2;
+    timer.stop();
+    document.getElementById("submit").hidden;
+    document.getElementById("submit").removeAttribute("hidden");
+});
+
+
+
+timer.addEventListener('secondTenthsUpdated', function (e) {
+    $('#chronoExample .values').html(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+});
+
+timer.addEventListener('started', function (e) {
+    $('#chronoExample .values').html(timer.getTimeValues().toString(['minutes', 'seconds', 'secondTenths']));
+});
+
+timer.addEventListener('targetAchieved', function (e) {
+    playing = false;
+    if (clicks1 > clicks2) {
+                winner = "player 1";
+        }else if (clicks1 < clicks2) {
+                winner = "player 2";
+    }
+    document.getElementById("winnertext").innerText = winner + " won";
+    document.getElementById("submit").removeAttribute("hidden");
+    document.getElementById("clicks1").innerText = clicks1;
+            document.getElementById("clicks2").innerText = clicks2;
+    clicks1 = 0;
+    clicks2 = 0;
+ });
+
+
+
+
+
+
+
+document.addEventListener('keyup', logKey);
+function logKey(e) { 
+    if (playing == true){
+        console.log(` ${e.code} `);
+        if (e.code == "KeyF") {
+            clicks1++;
+            document.getElementById("clicks1").innerText = clicks1;
+        } else if (e.code == "KeyJ") {
+            clicks2++;
+            document.getElementById("clicks2").innerText = clicks2;
+
+        }
+    }
+}
+
+    document.getElementById("submit").addEventListener("click", function() {
+   
+        time = parseInt(document.getElementById("input").value);
+        console.log(time);
+       
+});
+
+    // $(document).ready(function(){
+//     $(document).bind("keydown", function(e){ 
+// 		e = e || window.event;
+// 		var charCode = e.which || e.keyCode;
+// 		if(charCode == 105) onClick1();
+// 	});
+// });
+// $(document).ready(function(){
+//     $(document).bind("keydown", function(e){ 
+// 		e = e || window.event;
+// 		var charCode = e.which || e.keyCode;
+// 		if(charCode == 109) onClick2();
+// 	});
+// });
+
+
+
+    </script>
+</body>
+</html>
